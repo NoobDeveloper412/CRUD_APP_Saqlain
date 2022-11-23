@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signup } from "../../methods/authentication/auth";
 
 function Signup() {
   const history = useNavigate();
+  const userData = window.localStorage.getItem("userData");
+
   const [form, setForm] = useState({
     email: "",
-    password: "",
+    username: "",
   });
+  useEffect(() => {
+    if (userData) {
+      history("/dashboard");
+    }
+  }, [history, userData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signup(form, history);
@@ -40,23 +47,23 @@ function Signup() {
           <form onSubmit={handleSubmit}>
             <h3>Sign Up</h3>
             <div className="mb-3">
+              <label>Username</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Username"
+                name="username"
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+              />
+            </div>
+            <div className="mb-3">
               <label>Email</label>
               <input
                 type="email"
                 className="form-control"
-                placeholder="Email"
                 name="email"
+                placeholder="Email"
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
-            </div>
-            <div className="mb-3">
-              <label>Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                placeholder="Password"
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
             </div>
             <div className="d-grid">

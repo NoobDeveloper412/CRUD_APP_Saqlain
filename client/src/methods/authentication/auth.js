@@ -1,23 +1,43 @@
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../../firebase-config";
+import axios from "axios";
 
-export const signup = async ({ email, password }, history) => {
+export const signup = async ({ email, username }, history) => {
   try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    history("/dashboard");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { data } = await axios.post(
+      "http://localhost:8800/api/auth/register",
+      { email, username },
+      config
+    );
+
+    history("/welcome-screen");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
 
 export const signin = async ({ email, password }, history) => {
   try {
-    const user = await signInWithEmailAndPassword(auth, email, password);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { data } = await axios.post(
+      "http://localhost:8800/api/auth/login",
+      { email, password },
+      config
+    );
+
+    localStorage.setItem("userData", JSON.stringify(data));
+
     history("/dashboard");
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };

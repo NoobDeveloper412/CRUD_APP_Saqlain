@@ -1,20 +1,21 @@
 import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Login from "./components/authentication/signin.component";
+import SignIn from "./components/authentication/signin.component";
 import SignUp from "./components/authentication/signup.component";
 import Dashboard from "./layout/dashboard";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import WelcomeScreen from "./layout/screens/welcomeScreen";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<Login  />} />
-        <Route path="/sign-in" element={<Login  />} />
-        <Route path="/sign-up" element={<SignUp  />} />
-        <Route path="/dashboard" element={<Dashboard  />} />
+        <Route exact path="/" element={<SignIn />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/welcome-screen" element={<WelcomeScreen />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signin } from "../../methods/authentication/auth";
 
 function Signin() {
   const history = useNavigate();
 
+  const userData = window.localStorage.getItem("userData");
+
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+  
+  useEffect(() => {
+    if (userData) {
+      history("/dashboard");
+    }
+  }, [history, userData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await signin(form, history);
@@ -60,18 +69,6 @@ function Signin() {
                 name="passsword"
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
               />{" "}
-            </div>
-            <div className="mb-3">
-              <div className="custom-control custom-checkbox">
-                <input
-                  type="checkbox"
-                  className="custom-control-input"
-                  id="customCheck1"
-                />
-                <label className="custom-control-label" htmlFor="customCheck1">
-                  Remember me
-                </label>
-              </div>
             </div>
             <div className="d-grid">
               <button type="submit" className="btn btn-primary">

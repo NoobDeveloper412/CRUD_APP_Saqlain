@@ -1,35 +1,55 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const nodemailer = require("nodemailer");
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import authRoute from "./routes/auth.js";
+import usersRoute from "./routes/users.js";
+import carRoute from "./routes/cars.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+const app = express();
+dotenv.config(); //automatically loads environment variables from a . env file
 
-//Initializing Firebase Admin SDK
-admin.initializeApp();
+const connect = async () => {
+  //to handle unwanted errors during the execution
+  try {
+    await mongoose.connect(process.env.MONGO); //contains the URI connection string to MongoDB
+    console.log("Connected to MongoDB.");
+  } catch (error) {
+    throw error;
+  }
+};
 
-//Creating Nodemailer transporter using your Mailtrap SMTP details
-var transport = nodemailer.createTransport({
-  host: "smtp.mailtrap.io",
-  port: 2525,
-  auth: {
-    user: "e38d670e319986",
-    pass: "0cf4776b9fbf72",
-  },
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected!");
 });
 
-//Creating a Firebase Cloud Function
-exports.emailSender = functions.https.onRequest((req, res) => {
-  //Defining mailOptions
-  const mailOptions = {
-    from: "saqlainshahbaltee@gmail.com", //Adding sender's email
-    to: req.query.dest, //Getting recipient's email by query string
-    subject: "Email Sent via Firebase and Nodemailer", //Email subject
-    html: "<b>Congrats on having an account with us!</b>", //Email content in HTML
-  };
+//middlewares
+app.use(cors()); //allows a server to indicate any origins other than its own.
+app.use(cookieParser()); // parses cookies attached to the client request object
+app.use(express.json()); // parse the incoming requests with JSON payloads
 
-  //Returning result
-  return transport.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      return res.send(err.toString());
-    }
-    return res.send("Email sent succesfully");
+app.use("/api/auth", authRoute); //authRoute from "./routes/auth.js";
+app.use("/api/users", usersRoute); // usersRoute from "./routes/users.js";
+app.use("/api/cars", carRoute); // carRoute from "./routes/cars.js";
+
+app.use((err, req, res, next) => {
+  const errorStatus = err.status || 500;
+  const errorMessage = err.message || "Something went wrong!";
+  return res.status(errorStatus).json({
+    success: false,
+    status: errorStatus,
+    message: errorMessage,
+    stack: err.stack,
   });
+});
+
+// Create a listener on the port 8800
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  connect();
+  console.log(
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
+  );
+  console.log("Connected to Backend.");
 });
