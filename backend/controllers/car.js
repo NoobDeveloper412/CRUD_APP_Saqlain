@@ -97,7 +97,7 @@ export const getCar = async (req, res, next) => {
 
 export const getCars = async (req, res, next) => {
   const { ...details } = req.query;
-  //to handle unwanted errors during the execution
+  // To handle unwanted errors during the execution
   try {
     const cars = await Car.find({ ...details });
     res.status(200).json(cars);

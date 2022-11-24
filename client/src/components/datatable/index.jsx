@@ -70,22 +70,20 @@ function DataTable() {
   const [data, setData] = useState([]); //Table data
 
   const userData = window.localStorage.getItem("userData");
+  const vehicles = JSON.parse(window.localStorage.getItem("vehilces"));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  async function getVehicleData() {
+    return listVehicles(JSON.parse(userData));
+  }
   useEffect(() => {
     if (userData) {
-      const vehicles = listVehicles(JSON.parse(userData));
-      console.log(vehicles);
-      // setData(vehicles);
+      setData(vehicles);
     }
-  }, [userData]);
+  }, [getVehicleData, userData, vehicles]);
 
   // For error handling
   const [iserror, setIserror] = useState(false);
   const [errorMessages, setErrorMessages] = useState();
-  const config = {
-    headers: {
-      Authorization: `Bearer ${JSON.parse(userData).token}`,
-    },
-  };
 
   const handleRowUpdate = (newData, oldData, resolve) => {
     // Validation
@@ -111,11 +109,7 @@ function DataTable() {
 
     if (errorList.length < 1) {
       axios
-        .patch(
-          "http://localhost:8800/api/cars/update/" + newData.id,
-          config,
-          newData
-        )
+        .patch("http://localhost:8800/api/cars/update/" + newData.id, newData)
         .then((res) => {
           const dataUpdate = [...data];
           const index = oldData.tableData.id;
@@ -187,7 +181,7 @@ function DataTable() {
 
   const handleRowDelete = (oldData, resolve) => {
     axios
-      .delete("http://localhost:8800/api/cars/delete/" + oldData.id, config)
+      .delete("http://localhost:8800/api/cars/delete/" + oldData.id)
       .then((res) => {
         const dataDelete = [...data];
         const index = oldData.tableData.id;
@@ -207,39 +201,35 @@ function DataTable() {
   return (
     <div className="App">
       <Grid container spacing={1}>
-        <Grid item xs={3}></Grid>
-        <Grid item xs={6}>
-          <div>
-            {iserror && (
-              <Alert severity="error">
-                {errorMessages.map((msg, i) => {
-                  return <div key={i}>{msg}</div>;
-                })}
-              </Alert>
-            )}
-          </div>
-          <MaterialTable
-            title="User data from remote source"
-            columns={columns}
-            data={data}
-            icons={tableIcons}
-            editable={{
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve) => {
-                  handleRowUpdate(newData, oldData, resolve);
-                }),
-              onRowAdd: (newData) =>
-                new Promise((resolve) => {
-                  handleRowAdd(newData, resolve);
-                }),
-              onRowDelete: (oldData) =>
-                new Promise((resolve) => {
-                  handleRowDelete(oldData, resolve);
-                }),
-            }}
-          />
-        </Grid>
-        <Grid item xs={3}></Grid>
+        <div>
+          {iserror && (
+            <Alert severity="error">
+              {errorMessages.map((msg, i) => {
+                return <div key={i}>{msg}</div>;
+              })}
+            </Alert>
+          )}
+        </div>
+        <MaterialTable
+          title="Vehicle Data"
+          columns={columns}
+          data={data}
+          icons={tableIcons}
+          editable={{
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve) => {
+                handleRowUpdate(newData, oldData, resolve);
+              }),
+            onRowAdd: (newData) =>
+              new Promise((resolve) => {
+                handleRowAdd(newData, resolve);
+              }),
+            onRowDelete: (oldData) =>
+              new Promise((resolve) => {
+                handleRowDelete(oldData, resolve);
+              }),
+          }}
+        />
       </Grid>
     </div>
   );
