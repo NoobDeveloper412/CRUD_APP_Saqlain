@@ -1,0 +1,16 @@
+.welcomeScreen__container {
+  display: flex;
+  color: black;
+  align-items: center;
+  background-color: white;
+  justify-content: center;
+  height: 100vh;
+}
+
+.welcomeScreen__container > ul {
+  margin-left: -80px;
+  margin-top: 72px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

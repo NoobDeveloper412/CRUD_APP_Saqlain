@@ -1,34 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signin } from "../../methods/authentication/auth";
+import { register } from "../methods/users";
 
-function Signin() {
+function Register() {
   const history = useNavigate();
-
   const userData = window.localStorage.getItem("userData");
 
   const [form, setForm] = useState({
     email: "",
-    password: "",
+    username: "",
   });
-  
   useEffect(() => {
     if (userData) {
       history("/dashboard");
     }
   }, [history, userData]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signin(form, history);
+    await register(form, history).then((resp) =>
+      alert(resp.response.data.message)
+    );
   };
-
   return (
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container">
           <Link className="navbar-brand" to={"/sign-in"}>
-            Rinor
+          Ropstam
           </Link>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul className="navbar-nav ml-auto">
@@ -49,34 +47,36 @@ function Signin() {
       <div className="auth-wrapper">
         <div className="auth-inner">
           <form onSubmit={handleSubmit}>
-            <h3>Sign In</h3>
+            <h3>Sign Up</h3>
             <div className="mb-3">
-              <label>Email address</label>
+              <label>Username</label>
               <input
-                type="email"
+                type="text"
+                required
                 className="form-control"
-                placeholder="Enter email"
-                name="email"
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />{" "}
+                placeholder="Username"
+                name="username"
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+              />
             </div>
             <div className="mb-3">
-              <label>Password</label>
+              <label>Email</label>
               <input
-                type="password"
+                type="email"
+                required
                 className="form-control"
-                placeholder="Enter password"
-                name="passsword"
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />{" "}
+                name="email"
+                placeholder="Email"
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
             </div>
             <div className="d-grid">
               <button type="submit" className="btn btn-primary">
                 Submit
               </button>
             </div>
-            <Link className="nav-link" to={"/sign-up"}>
-              Don't have an account?
+            <Link className="nav-link" to={"/sign-in"}>
+              Already registered?
             </Link>
           </form>
         </div>
@@ -85,4 +85,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default Register;
