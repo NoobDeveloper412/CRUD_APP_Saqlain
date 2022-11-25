@@ -80,7 +80,7 @@ export const deleteCar = async (req, res, next) => {
   //to handle unwanted errors during the execution
   try {
     await Car.findByIdAndDelete(req.params.id);
-    res.status(200).json("Car has been deleted.");
+    res.status(200).json("Vehicle has been deleted.");
   } catch (err) {
     next(err);
   }

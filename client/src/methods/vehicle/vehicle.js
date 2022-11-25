@@ -4,6 +4,7 @@ export const listVehicles = async (userData) => {
   try {
     const config = {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${userData.token}`,
       },
     };
@@ -12,7 +13,7 @@ export const listVehicles = async (userData) => {
       `http://localhost:8800/api/cars/list`,
       config
     );
-    window.localStorage.setItem("vehilces", JSON.stringify(data));
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -21,6 +22,8 @@ export const addVehicle = async (userData, vehicleData) => {
   try {
     const config = {
       headers: {
+        "Content-Type": "application/json",
+
         Authorization: `Bearer ${userData.token}`,
       },
     };
@@ -30,7 +33,43 @@ export const addVehicle = async (userData, vehicleData) => {
       vehicleData,
       config
     );
-    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const updateVehicle = async (userData, vehicleData) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+
+        Authorization: `Bearer ${userData.token}`,
+      },
+    };
+
+    const { data } = await axios.post(
+      `http://localhost:8800/api/cars/update/${vehicleData._id}`,
+      vehicleData,
+      config
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const deleteVehicle = async (userData, vehicleData) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+
+        Authorization: `Bearer ${userData.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(
+      `http://localhost:8800/api/cars/delete/${vehicleData._id}`,
+      config
+    );
   } catch (error) {
     console.log(error);
   }

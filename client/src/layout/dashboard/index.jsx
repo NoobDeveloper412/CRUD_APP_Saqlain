@@ -9,17 +9,12 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import Deposits from "../../components/dashboard/deposits.component";
-import Orders from "../../components/dashboard/orders.component";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
 import { useNavigate } from "react-router-dom";
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import DataTable from "../../components/datatable";
@@ -80,7 +75,7 @@ function DashboardContent() {
     if (!userData) {
       history("/sign-in");
     }
-  }, [history, userData]);
+  });
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -118,9 +113,11 @@ function DashboardContent() {
               Dashboard
             </Typography>
             <Link
-              onClick={() => localStorage.clear()}
+              onClick={() => {
+                localStorage.clear();
+                history("/sign-in");
+              }}
               style={{ color: "white" }}
-              to={"/sign-in"}
             >
               Signout
             </Link>
@@ -147,14 +144,6 @@ function DashboardContent() {
                   <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
-              </ListItemButton>
-            </Link>
-            <Link to="/Profile">
-              <ListItemButton>
-                <ListItemIcon>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Profile" />
               </ListItemButton>
             </Link>
             <Divider sx={{ my: 1 }} />
